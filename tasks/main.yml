@@ -6,10 +6,10 @@
   service: name=snmpd state=stopped
 - name: Récupération de la conf ipv6
   shell: test -f /proc/net/if_inet6 && echo 1 || echo 0
-  register: check_ip_result
+  register: check_ipv6_result
 - name: Set du fact pour l'ip
   set_fact:
-    ipv6_enabled: "{{ check_ip_result.stdout | bool }}"
+    ipv6_enabled: "{{ check_ipv6_result.stdout | bool }}"
 - name: Copie du fichier de configuration snmpd
   template:
     src: "../templates/snmpd.conf.j2"
@@ -17,4 +17,4 @@
     mode: '600'
 - name: Redémarrage du service snmpd si l'option est présente
   service: name=snmpd state=restarted enabled=true
-  when: start_snmp
+  when: use_snmp
